@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/TPEimperialPE/XPBottle
+build-by-default: true
+branches:
+- main
+projects:
+  XPBottle:
+    icon: "icon.png"
+    path: ""
+...
