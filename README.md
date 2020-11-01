@@ -51,8 +51,7 @@ A pocketmine plugin that allows players to bottle their xp with a command.
 
       must-be-above-0: "§cAmount specified must be above 0!"
 
-~ Message sent to player if the amount specified exceeds the amount of xp the player currently possesses,
-~ use %XP% for how much xp the sender has:
+~ Message sent to player if the amount specified exceeds the amount of xp the player currently possesses, use %XP% for how much xp the sender has:
 
       insufficient-xp: "§cAmount specified exceeds how much XP you currently have, you currently have §b%XP%§c!"
 
@@ -60,8 +59,7 @@ A pocketmine plugin that allows players to bottle their xp with a command.
 
       not-integer-message: "§cAmount specified must be numeric!"
 
-~ Message sent to player when xp is extracted successfully, use %AMOUNT-EXTRACTED% for the amount of XP
-~ the player extracted into a bottle:
+~ Message sent to player when xp is extracted successfully, use %AMOUNT-EXTRACTED% for the amount of XP the player extracted into a bottle:
 
       success-message: "§aSuccesfully extracted §b%AMOUNT-EXTRACTED%§a XP!"
 
@@ -77,13 +75,11 @@ A pocketmine plugin that allows players to bottle their xp with a command.
 
     self-success-message: "§aSuccessfully given yourself an XP bottle worth §b%AMOUNT% §aXP!"
 
-~ Message sent to reciever of the xp bottle from another player, use %AMOUNT% for the amount given and 
-~ %SENDER% for the name of the player who gave it to them:
+~ Message sent to reciever of the xp bottle from another player, use %AMOUNT% for the amount given and %SENDER% for the name of the player who gave it to them:
 
       target-success-message: "§aYou have recieved an XP bottle worth §b%AMOUNT% §aXP from §b%SENDER%§a!"
 
-~ Message sent to the player who gives an xp bottle to another player, use %AMOUNT% for the amount given and
-~ %TARGET% for the name of the specified player:
+~ Message sent to the player who gives an xp bottle to another player, use %AMOUNT% for the amount given and %TARGET% for the name of the specified player:
 
       sender-success-message: "§aSuccessfully given §b%TARGET%§a an XP bottle worth §b%AMOUNT%§a XP!"
 
