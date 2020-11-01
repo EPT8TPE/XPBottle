@@ -72,7 +72,7 @@ class Main extends PluginBase implements Listener {
         } elseif($command->getName() === "newxpbottle") {
 
             if(!$sender->hasPermission("xpbottle.newxpbottle.command")) {
-                $sender->sendMessage($this->getConfig->get("no-perms-message-newxpbottle"));
+                $sender->sendMessage($this->getConfig()->get("no-perms-message-newxpbottle"));
                 return false;
             }
 
