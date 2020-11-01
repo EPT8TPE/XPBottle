@@ -49,7 +49,7 @@ class Main extends PluginBase implements Listener {
                     return false;
                 }
 
-                if($args[0] === 0) {
+                if((int)$args[0] === 0) {
                     $sender->sendMessage($this->getConfig()->get("must-be-above-0"));
                     return false;
                 }
@@ -83,7 +83,7 @@ class Main extends PluginBase implements Listener {
 
             if(is_numeric((string)$args[0])) {
 
-                if($args[0] === 0) {
+                if((int)$args[0] === 0) {
                     $sender->sendMessage($this->getConfig()->get("must-be-above-0"));
                     return false;
                 }
