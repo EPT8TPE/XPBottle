@@ -2,7 +2,7 @@
 A pocketmine plugin that allows players to bottle their xp with a command.
 
 # How to use
-1. Download the phar from https://poggit.pmmp.io/ci/TPEimperialPE/XPBottle/~/dev:3.
+1. Download the phar from https://poggit.pmmp.io/.
 2. Upload to your servers plugin directory.
 3. Restart your server.
 
