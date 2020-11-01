@@ -1,0 +1,26 @@
+name: XPBottle
+api: 3.0.0
+version: 1.0.0
+author: TPE
+main: TPE\XPBottle\Main
+
+commands:
+  xpbottle:
+    permission: xpbottle.xpbottle.command
+    description: Put a specific amount of xp into a throwable bottle.
+
+  newxpbottle:
+    permission: xpbottle.newxpbottle.command
+    description: Create an xp bottle of any amount regardless of current xp.
+
+  myxp:
+    permission: xpbottle.myxp.command
+    description: Check how much XP you currently possess!
+  
+permissions:
+  xpbottle.xpbottle.command:
+    default: true
+  xpbottle.newxpbottlecommand:
+    default: op
+  xpbottle.myxp.command:
+    default: true
