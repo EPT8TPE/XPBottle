@@ -153,7 +153,7 @@ class Main extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if($item->getId() === 384 && $item->getDamage() > 0) {
-            $item->setCount($item->getCount() - 1);
+            $item->pop();
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
             $player->addXp($item->getDamage());
             $player->getLevel()->addSound(new PopSound($player), [$player]);
