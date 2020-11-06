@@ -20,7 +20,7 @@ commands:
 permissions:
   xpbottle.xpbottle.command:
     default: true
-  xpbottle.newxpbottlecommand:
+  xpbottle.newxpbottle.command:
     default: op
   xpbottle.myxp.command:
     default: true
