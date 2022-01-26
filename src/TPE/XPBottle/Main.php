@@ -10,7 +10,6 @@ use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\VanillaItems;
-use pocketmine\level\sound\PopSound;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
@@ -93,7 +92,7 @@ class Main extends PluginBase implements Listener {
                     return false;
                 }
 
-                $target = $this->getServer()->getPlayer((string)$args[1]);
+                $target = $this->getServer()->getPlayerByPrefix((string)$args[1]);
 
                 if(!$target instanceof Player) {
                     $sender->sendMessage($this->getConfig()->get("invalid-player"));
@@ -113,8 +112,8 @@ class Main extends PluginBase implements Listener {
                     }
 
                     $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                    $bottle->getNamedTag()->setInt("XP", (int)$args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                    $bottle->getNamedTag()->setInt("xp", (int)$args[0]);
+                    $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $target->getInventory()->addItem($bottle);
                     $target->sendMessage(str_replace(["%AMOUNT%", "%SENDER%"], [(int)$args[0], $sender->getName()], $this->getConfig()->get("target-success-message")));;
@@ -123,7 +122,6 @@ class Main extends PluginBase implements Listener {
             }
 
         } elseif($command->getName() === "myxp") {
-
             if(!$sender instanceof Player) {
                 $sender->sendMessage("You can not run this commmand via console!");
                 return false;
@@ -146,8 +144,7 @@ class Main extends PluginBase implements Listener {
         if($item->getId() === 384 && $item->getNamedTag()->getTag("xp") !== null) {
             $item->pop();
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
-            $player->addXp($item->getNamedTag()->getInt("xp"));
-            $player->getLevel()->addSound(new PopSound($player), [$player]);
+            $player->getXpManager()->addXp($item->getNamedTag()->getInt("xp"));
             $event->cancel();
         }
     }
