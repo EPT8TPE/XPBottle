@@ -14,7 +14,6 @@ use pocketmine\level\sound\PopSound;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
-use pocketmine\nbt\item\IntTag;
 
 class Main extends PluginBase implements Listener {
 
@@ -57,12 +56,12 @@ class Main extends PluginBase implements Listener {
 
                 if($args[0] <= $currentxp) {
                     $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                    $bottle->getNamedTag()->setInt("XP", $args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                    $bottle->getNamedTag()->setInt("XP", (int)$args[0]);
+                    $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $sender->getInventory()->addItem($bottle);
                     $sender->sendMessage(str_replace("%AMOUNT-EXTRACTED%", (int)$args[0], $this->getConfig()->get("success-message")));
-                    $sender->getXpManager()->subtractXp($bottle->getDamage());
+                    $sender->getXpManager()->subtractXp((int)$args[0]);
                 } else {
                     $sender->sendMessage(str_replace("%XP%", $currentxp, $this->getConfig()->get("insufficient-xp")));
                 }
@@ -105,8 +104,8 @@ class Main extends PluginBase implements Listener {
 
                     if($target->getName() === $sender->getName()) {
                         $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                        $bottle->getNamedTag()->setInt("xp", $args[0]);
-                        $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                        $bottle->getNamedTag()->setInt("xp", (int)$args[0]);
+                        $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                         $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                         $target->getInventory()->addItem($bottle);
                         $sender->sendMessage(str_replace("%AMOUNT%", (int)$args[0], $this->getConfig()->get("self-success-message")));
@@ -114,7 +113,7 @@ class Main extends PluginBase implements Listener {
                     }
 
                     $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                    $bottle->getNamedTag()->setInt("XP", $args[0]);
+                    $bottle->getNamedTag()->setInt("XP", (int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $target->getInventory()->addItem($bottle);
@@ -144,10 +143,10 @@ class Main extends PluginBase implements Listener {
     public function onBottleSmash(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        if($item->getId() === 384 && $item->getNamedTag()->hasTag("xp", IntTag::class)) {
+        if($item->getId() === 384 && $item->getNamedTag()->getTag("xp") !== null) {
             $item->pop();
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
-            $player->addXp($item->getDamage());
+            $player->addXp($item->getNamedTag()->getInt("xp"));
             $player->getLevel()->addSound(new PopSound($player), [$player]);
             $event->cancel();
         }
