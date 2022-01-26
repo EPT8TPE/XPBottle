@@ -14,6 +14,7 @@ use pocketmine\level\sound\PopSound;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
+use pocketmine\nbt\item\IntTag;
 
 class Main extends PluginBase implements Listener {
 
@@ -56,7 +57,7 @@ class Main extends PluginBase implements Listener {
 
                 if($args[0] <= $currentxp) {
                     $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                    $bottle->setDamage((int)$args[0]);
+                    $bottle->getNamedTag()->setInt("XP", $args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $sender->getInventory()->addItem($bottle);
@@ -104,7 +105,7 @@ class Main extends PluginBase implements Listener {
 
                     if($target->getName() === $sender->getName()) {
                         $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                        $bottle->setDamage((int)$args[0]);
+                        $bottle->getNamedTag()->setInt("xp", $args[0]);
                         $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                         $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                         $target->getInventory()->addItem($bottle);
@@ -113,7 +114,7 @@ class Main extends PluginBase implements Listener {
                     }
 
                     $bottle = VanillaItems::EXPERIENCE_BOTTLE();
-                    $bottle->setDamage((int)$args[0]);
+                    $bottle->getNamedTag()->setInt("XP", $args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $target->getInventory()->addItem($bottle);
@@ -143,7 +144,7 @@ class Main extends PluginBase implements Listener {
     public function onBottleSmash(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        if($item->getId() === 384 && $item->getDamage() > 0) {
+        if($item->getId() === 384 && $item->getNamedTag()->hasTag("xp", IntTag::class)) {
             $item->pop();
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
             $player->addXp($item->getDamage());
