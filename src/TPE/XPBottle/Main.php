@@ -9,7 +9,7 @@ use pocketmine\command\Command;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\level\sound\PopSound;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
@@ -55,13 +55,13 @@ class Main extends PluginBase implements Listener {
                 }
 
                 if($args[0] <= $currentxp) {
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
+                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
                     $bottle->setDamage((int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $sender->getInventory()->addItem($bottle);
                     $sender->sendMessage(str_replace("%AMOUNT-EXTRACTED%", (int)$args[0], $this->getConfig()->get("success-message")));
-                    $sender->subtractXp($bottle->getDamage());
+                    $sender->getXpManager()->subtractXp($bottle->getDamage());
                 } else {
                     $sender->sendMessage(str_replace("%XP%", $currentxp, $this->getConfig()->get("insufficient-xp")));
                 }
@@ -103,7 +103,7 @@ class Main extends PluginBase implements Listener {
                 if($sender instanceof Player) {
 
                     if($target->getName() === $sender->getName()) {
-                        $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
+                        $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
                         $bottle->setDamage((int)$args[0]);
                         $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                         $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
@@ -112,7 +112,7 @@ class Main extends PluginBase implements Listener {
                         return false;
                     }
 
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
+                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
                     $bottle->setDamage((int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
@@ -122,7 +122,7 @@ class Main extends PluginBase implements Listener {
                 }
 
                 if($sender instanceof ConsoleCommandSender) {
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
+                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
                     $bottle->setDamage((int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP.");
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
@@ -143,7 +143,7 @@ class Main extends PluginBase implements Listener {
                 return false;
             }
 
-            $xp = $sender->getCurrentTotalXp();
+            $xp = $sender->getXpManager()->getCurrentTotalXp();
             $sender->sendMessage(str_replace("%XP%", $xp, $this->getConfig()->get("xp-success-message")));
         }
         return true;
