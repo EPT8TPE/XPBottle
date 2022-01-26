@@ -55,7 +55,7 @@ class Main extends PluginBase implements Listener {
                 }
 
                 if($args[0] <= $currentxp) {
-                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
+                    $bottle = VanillaItems::EXPERIENCE_BOTTLE();
                     $bottle->setDamage((int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
@@ -103,7 +103,7 @@ class Main extends PluginBase implements Listener {
                 if($sender instanceof Player) {
 
                     if($target->getName() === $sender->getName()) {
-                        $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
+                        $bottle = VanillaItems::EXPERIENCE_BOTTLE();
                         $bottle->setDamage((int)$args[0]);
                         $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                         $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
@@ -112,22 +112,13 @@ class Main extends PluginBase implements Listener {
                         return false;
                     }
 
-                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
+                    $bottle = VanillaItems::EXPERIENCE_BOTTLE();
                     $bottle->setDamage((int)$args[0]);
                     $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $target->getInventory()->addItem($bottle);
                     $target->sendMessage(str_replace(["%AMOUNT%", "%SENDER%"], [(int)$args[0], $sender->getName()], $this->getConfig()->get("target-success-message")));;
                     $sender->sendMessage(str_replace(["%AMOUNT%", "%TARGET%"], [(int)$args[0], $target->getName()], $this->getConfig()->get("sender-success-message")));
-                }
-
-                if($sender instanceof ConsoleCommandSender) {
-                    $bottle = VanillaItems::BOTTLE_O_ENCHANTING();
-                    $bottle->setDamage((int)$args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP.");
-                    $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
-                    $target->getInventory()->addItem($bottle);
-                    $sender->sendMessage("Successfully given an XP bottle worth " . (int)$args[0] . " to " . $target->getName() . "!");
                 }
             }
 
@@ -157,7 +148,7 @@ class Main extends PluginBase implements Listener {
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
             $player->addXp($item->getDamage());
             $player->getLevel()->addSound(new PopSound($player), [$player]);
-            $event->setCancelled();
+            $event->cancel();
         }
     }
 }
