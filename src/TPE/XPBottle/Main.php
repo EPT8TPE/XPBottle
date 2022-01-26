@@ -9,8 +9,7 @@ use pocketmine\command\Command;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\item\Item;
-use pocketmine\level\sound\PopSound;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
@@ -55,13 +54,13 @@ class Main extends PluginBase implements Listener {
                 }
 
                 if($args[0] <= $currentxp) {
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
-                    $bottle->setDamage((int)$args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                    $bottle = VanillaItems::EXPERIENCE_BOTTLE();
+                    $bottle->getNamedTag()->setInt("XP", (int)$args[0]);
+                    $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $sender->getInventory()->addItem($bottle);
                     $sender->sendMessage(str_replace("%AMOUNT-EXTRACTED%", (int)$args[0], $this->getConfig()->get("success-message")));
-                    $sender->subtractXp($bottle->getDamage());
+                    $sender->getXpManager()->subtractXp((int)$args[0]);
                 } else {
                     $sender->sendMessage(str_replace("%XP%", $currentxp, $this->getConfig()->get("insufficient-xp")));
                 }
@@ -93,7 +92,7 @@ class Main extends PluginBase implements Listener {
                     return false;
                 }
 
-                $target = $this->getServer()->getPlayer((string)$args[1]);
+                $target = $this->getServer()->getPlayerByPrefix((string)$args[1]);
 
                 if(!$target instanceof Player) {
                     $sender->sendMessage($this->getConfig()->get("invalid-player"));
@@ -103,36 +102,26 @@ class Main extends PluginBase implements Listener {
                 if($sender instanceof Player) {
 
                     if($target->getName() === $sender->getName()) {
-                        $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
-                        $bottle->setDamage((int)$args[0]);
-                        $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                        $bottle = VanillaItems::EXPERIENCE_BOTTLE();
+                        $bottle->getNamedTag()->setInt("xp", (int)$args[0]);
+                        $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                         $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                         $target->getInventory()->addItem($bottle);
                         $sender->sendMessage(str_replace("%AMOUNT%", (int)$args[0], $this->getConfig()->get("self-success-message")));
                         return false;
                     }
 
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
-                    $bottle->setDamage((int)$args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
+                    $bottle = VanillaItems::EXPERIENCE_BOTTLE();
+                    $bottle->getNamedTag()->setInt("xp", (int)$args[0]);
+                    $bottle->setCustomName(TextFormat::GREEN . $args[0] . TextFormat::AQUA . " XP " . TextFormat::GREEN . "extracted by " . TextFormat::AQUA . $sender->getName());
                     $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
                     $target->getInventory()->addItem($bottle);
                     $target->sendMessage(str_replace(["%AMOUNT%", "%SENDER%"], [(int)$args[0], $sender->getName()], $this->getConfig()->get("target-success-message")));;
                     $sender->sendMessage(str_replace(["%AMOUNT%", "%TARGET%"], [(int)$args[0], $target->getName()], $this->getConfig()->get("sender-success-message")));
                 }
-
-                if($sender instanceof ConsoleCommandSender) {
-                    $bottle = Item::get(Item::BOTTLE_O_ENCHANTING);
-                    $bottle->setDamage((int)$args[0]);
-                    $bottle->setCustomName(TextFormat::GREEN . $bottle->getDamage() . TextFormat::AQUA . " XP.");
-                    $bottle->setLore([TextFormat::DARK_PURPLE . TextFormat::ITALIC . "Right click to recieve XP!"]);
-                    $target->getInventory()->addItem($bottle);
-                    $sender->sendMessage("Successfully given an XP bottle worth " . (int)$args[0] . " to " . $target->getName() . "!");
-                }
             }
 
         } elseif($command->getName() === "myxp") {
-
             if(!$sender instanceof Player) {
                 $sender->sendMessage("You can not run this commmand via console!");
                 return false;
@@ -143,7 +132,7 @@ class Main extends PluginBase implements Listener {
                 return false;
             }
 
-            $xp = $sender->getCurrentTotalXp();
+            $xp = $sender->getXpManager()->getCurrentTotalXp();
             $sender->sendMessage(str_replace("%XP%", $xp, $this->getConfig()->get("xp-success-message")));
         }
         return true;
@@ -152,12 +141,11 @@ class Main extends PluginBase implements Listener {
     public function onBottleSmash(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        if($item->getId() === 384 && $item->getDamage() > 0) {
+        if($item->getId() === 384 && $item->getNamedTag()->getTag("xp") !== null) {
             $item->pop();
             $player->getInventory()->setItem($player->getInventory()->getHeldItemIndex(), $item);
-            $player->addXp($item->getDamage());
-            $player->getLevel()->addSound(new PopSound($player), [$player]);
-            $event->setCancelled();
+            $player->getXpManager()->addXp($item->getNamedTag()->getInt("xp"));
+            $event->cancel();
         }
     }
 }
