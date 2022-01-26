@@ -17,7 +17,7 @@ use pocketmine\utils\TextFormat;
 
 class Main extends PluginBase implements Listener {
 
-    public function onEnable()
+    public function onEnable() : void
     {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
@@ -42,7 +42,7 @@ class Main extends PluginBase implements Listener {
             }
 
             if(is_numeric((string)$args[0])) {
-                $currentxp = $sender->getCurrentTotalXp();
+                $currentxp = $sender->getXpManager()->getCurrentTotalXp();
 
                 if($currentxp === 0) {
                     $sender->sendMessage($this->getConfig()->get("no-xp"));
